@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -40,12 +41,15 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-
-        return User::create([
+        $user =  User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            
         ]);
+
+        $user->access_token = $user->createToken('SignUp Access Token')->accessToken;
+        return $user;
     }
 
     public function logout()
